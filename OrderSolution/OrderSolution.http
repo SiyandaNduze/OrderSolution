@@ -1,6 +1,41 @@
 @OrderSolution_HostAddress = http://localhost:5262
+@orderId = 00000000-0000-0000-0000-000000000000
 
-GET {{OrderSolution_HostAddress}}/weatherforecast/
+### ----------------------------
+### Health Check
+### ----------------------------
+GET {{OrderSolution_HostAddress}}/health
 Accept: application/json
 
-###
+### ----------------------------
+### Get All Orders
+### ----------------------------
+GET {{OrderSolution_HostAddress}}/api/orders
+Accept: application/json
+
+### ----------------------------
+### Create Order
+### ----------------------------
+POST {{OrderSolution_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "John Doe",
+  "product": "Laptop",
+  "quantity": 2
+}
+
+### ----------------------------
+### Get Order By ID
+### (Replace orderId with the ID from Create response)
+### ----------------------------
+GET {{OrderSolution_HostAddress}}/api/orders/{{orderId}}
+Accept: application/json
+
+### ----------------------------
+### Update Order Status
+### ----------------------------
+PUT {{OrderSolution_HostAddress}}/api/orders/{{orderId}}/status
+Content-Type: application/json
+
+"Shipped"
