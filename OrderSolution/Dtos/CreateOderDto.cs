@@ -1,24 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OrderSolution.Models
+namespace OrderSolution.Dtos
 {
-    public class Order
+    public class CreateOrderDto
     {
-        public Guid Id { get; set; }
         [Required]
-        [MaxLength(100)]
         public string CustomerName { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(100)]
         public string Product { get; set; } = string.Empty;
 
         [Range(1, 1000)]
         public int Quantity { get; set; }
-
-        [Required]
-        public string Status { get; set; } = "Pending";
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

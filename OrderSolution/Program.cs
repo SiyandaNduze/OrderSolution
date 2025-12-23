@@ -1,3 +1,5 @@
+using OrderSolution.Data;
+using OrderSolution.Middleware;
 using OrderSolution.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<IOrderService, OrderSolution.Services.OrderService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<OrderDbContext>();
+
 
 var app = builder.Build();
 
@@ -18,6 +23,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
 

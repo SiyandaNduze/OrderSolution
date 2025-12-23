@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderSolution.Dtos;
 using OrderSolution.Models;
 using OrderSolution.Services;
 
@@ -18,31 +19,43 @@ namespace OrderSolution.Controllers
 
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_orderService.GetAll());
+            var orders = await _orderService.GetAll();
+            return Ok(orders);
         }
 
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var order = _orderService.GetById(id);
+            var order = await _orderService.GetById(id);
             return order == null ? NotFound() : Ok(order);
         }
 
         [HttpPost]
-        public IActionResult Create(Order order)
+        public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
         {
-            var createdOrder = _orderService.Create(order);
-            return CreatedAtAction(nameof(GetById), new { id = createdOrder.Id }, createdOrder);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var order = new Order
+            {
+                CustomerName = dto.CustomerName,
+                Product = dto.Product,
+                Quantity = dto.Quantity
+            };
+
+            var created = await _orderService.Create(order);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
 
+
         [HttpPut("{id}/status")]
-        public IActionResult UpdateStatus(Guid id, [FromBody] string status)
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
         {
-            var updated = _orderService.UpdateStatus(id, status);
+            var updated = await _orderService.UpdateStatus(id, status);
             return updated ? NoContent() : NotFound();
         }
     }
